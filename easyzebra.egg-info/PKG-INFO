@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: easyzebra
+Version: 0.0.1
+Summary: Zebra ZPL II Driver
+Home-page: https://github.com/stevelittlefish/easyzebra
+Author: Stephen Brown (Little Fish Solutions LTD)
+Author-email: opensource@littlefish.solutions
+License: Apache
+Download-URL: https://github.com/stevelittlefish/easyzebra/archive/v0.0.1.tar.gz
+Description: UNKNOWN
+Keywords: easy,zebra,zpl
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Software Development :: Libraries

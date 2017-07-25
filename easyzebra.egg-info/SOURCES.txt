@@ -1,0 +1,11 @@
+LICENSE.txt
+MANIFEST.in
+setup.cfg
+setup.py
+easyzebra/__init__.py
+easyzebra/driver.py
+easyzebra/zebrautil.py
+easyzebra.egg-info/PKG-INFO
+easyzebra.egg-info/SOURCES.txt
+easyzebra.egg-info/dependency_links.txt
+easyzebra.egg-info/top_level.txt
