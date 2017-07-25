@@ -1,0 +1,6 @@
+.ropeproject
+*.pyc
+MANIFEST
+dist
+*.swp
+easyzebra.egg-info
