@@ -22,6 +22,11 @@ MODE_HTTPS = 'HTTPS'
 
 ALL_MODES = [MODE_SOCKET, MODE_HTTP, MODE_HTTPS]
 
+JUSTIFICATION_LEFT = 'L'
+JUSTIFICATION_CENTRE = 'C'
+JUSTIFICATION_RIGHT = 'R'
+JUSTIFICATION_JUSTIFIED = 'J'
+
 
 class Zebra(object):
     def __init__(self, host, port=9100, mode=MODE_SOCKET, http_endpoint=None):
@@ -142,10 +147,31 @@ class Zebra(object):
         if isinstance(text, str):
             ascii_text = unidecode(text)
         else:
-            ascii_text = str(text)
+            ascii_text = text
 
         self.field_origin(pos)
         self.message_line('^A%sN,%s,%s' % (font, char_size[0], char_size[1]))
+        self.message_line('^FD%s' % ascii_text)
+        self.field_separator()
+
+    def write_text_block(self, text, width, max_lines=1, justification=JUSTIFICATION_LEFT,
+                         add_line_space=0, pos=None, char_size=None, font=None,
+                         hanging_indent=0):
+        if char_size is None:
+            char_size = self.char_size
+
+        if font is None:
+            font = self.font
+
+        if isinstance(text, str):
+            ascii_text = unidecode(text)
+        else:
+            ascii_text = text
+
+        self.field_origin(pos)
+        self.message_line('^A%sN,%s,%s' % (font, char_size[0], char_size[1]))
+        self.message_line('^FB%s,%s,%s,%s,%s' % (width, max_lines, add_line_space, justification,
+                                                 hanging_indent))
         self.message_line('^FD%s' % ascii_text)
         self.field_separator()
 
