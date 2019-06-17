@@ -29,12 +29,15 @@ JUSTIFICATION_JUSTIFIED = 'J'
 
 
 class Zebra(object):
-    def __init__(self, host, port=9100, mode=MODE_SOCKET, http_endpoint=None):
+    def __init__(self, host, port=9100, mode=MODE_SOCKET, http_endpoint=None,
+                 timeout=None):
         """
         :param host: The zebra printer host
         :param port: The zebra printer port
         :param mode: The mode: either 'SOCKET', 'HTTP' or 'HTTPS'
         :param http_endpoint: The URL for http / https requests.  Ignored if mode is socket
+        :param timeout: The timeout, in seconds, after which to give up waiting for a request
+                        to the printer to succeed
         :return:
         """
         if (mode == MODE_HTTP or mode == MODE_HTTPS) and not http_endpoint:
@@ -46,6 +49,7 @@ class Zebra(object):
         self._mode = None
         self.mode = mode
         self.http_endpoint = http_endpoint
+        self.timeout = timeout
 
         # The current label we are building up code for
         self.current_message = []
@@ -76,6 +80,8 @@ class Zebra(object):
                     pass
 
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            if self.timeout:
+                self.socket.settimeout(self.timeout)
 
             try:
                 self.socket.connect((self.host, self.port))
@@ -109,7 +115,7 @@ class Zebra(object):
             protocol = 'http' if self.mode == MODE_HTTP else 'https'
             url = '%s://%s:%s%s' % (protocol, self.host, self.port, self.http_endpoint)
             payload = {'zpl': message}
-            response = requests.post(url, data=payload, verify=False)
+            response = requests.post(url, data=payload, verify=False, timeout=self.timeout)
             response_json = response.json()
             if response_json['error']:
                 raise Exception('Error sending http request to printer: %s' % response_json['error'])
