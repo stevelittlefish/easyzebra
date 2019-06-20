@@ -237,7 +237,7 @@ class Zebra(object):
         log.debug('Sending message: %s' % zpl)
 
         # self.connect()
-        self._send(zpl)
+        self._send(zpl, host_override=host_override, port_override=port_override)
         # self.disconnect()
 
         if clear_message:
