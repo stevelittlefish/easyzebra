@@ -69,6 +69,14 @@ class Zebra(object):
         if value not in ALL_MODES:
             raise Exception('Invalid mode: %s.  Valid options are %s' % (value, ALL_MODES))
         self._mode = value
+    
+    def get_url(self):
+        if self.mode == MODE_HTTP or self.mode == MODE_HTTPS:
+            protocol = 'http' if self.mode == MODE_HTTP else 'https'
+            return '%s://%s:%s%s' % (protocol, self.host, self.port, self.http_endpoint)
+        else:
+            assert self.mode == MODE_SOCKET
+            return '{}:{}'.format(self.host, self.port)
 
     def connect(self):
         if self.mode == MODE_SOCKET:
@@ -112,8 +120,7 @@ class Zebra(object):
                     raise Exception('Socket connection broken')
                 total_sent += sent
         elif self.mode == MODE_HTTP or self.mode == MODE_HTTPS:
-            protocol = 'http' if self.mode == MODE_HTTP else 'https'
-            url = '%s://%s:%s%s' % (protocol, self.host, self.port, self.http_endpoint)
+            url = self.get_url()
             payload = {'zpl': message}
             response = requests.post(url, data=payload, verify=False, timeout=self.timeout)
             response_json = response.json()
@@ -229,6 +236,17 @@ class Zebra(object):
 
         if clear_message:
             self.current_message = []
+
+    def get_message(self, clear_message=True):
+        """
+        This will return the current label in zpl format and (by default) clear the buffer
+        """
+        zpl = self.zpl
+
+        if clear_message:
+            self.current_message = []
+
+        return zpl
 
 
 class ZebraBitmap(object):
