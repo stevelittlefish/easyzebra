@@ -70,13 +70,16 @@ class Zebra(object):
             raise Exception('Invalid mode: %s.  Valid options are %s' % (value, ALL_MODES))
         self._mode = value
     
-    def get_url(self):
+    def get_url(self, host_override=None, port_override=None):
+        host = host_override if host_override else self.host
+        port = port_override if port_override else self.port
+
         if self.mode == MODE_HTTP or self.mode == MODE_HTTPS:
             protocol = 'http' if self.mode == MODE_HTTP else 'https'
-            return '%s://%s:%s%s' % (protocol, self.host, self.port, self.http_endpoint)
+            return '%s://%s:%s%s' % (protocol, host, port, self.http_endpoint)
         else:
             assert self.mode == MODE_SOCKET
-            return '{}:{}'.format(self.host, self.port)
+            return '{}:{}'.format(host, port)
 
     def connect(self):
         if self.mode == MODE_SOCKET:
@@ -105,8 +108,11 @@ class Zebra(object):
             except socket.error as e:
                 log.warn('Error closing socket: %s' % e)
 
-    def _send(self, message):
+    def _send(self, message, host_override=None, port_override=None):
         if self.mode == MODE_SOCKET:
+            if host_override or port_override:
+                raise Exception('Host and port override not implemented for socket connections')
+
             if not self.socket:
                 raise Exception('Zebra printer not connected (%s:%s)' % (self.host, self.port))
             # Send some junk first to detect closed connections
@@ -120,7 +126,7 @@ class Zebra(object):
                     raise Exception('Socket connection broken')
                 total_sent += sent
         elif self.mode == MODE_HTTP or self.mode == MODE_HTTPS:
-            url = self.get_url()
+            url = self.get_url(host_override, port_override)
             payload = {'zpl': message}
             response = requests.post(url, data=payload, verify=False, timeout=self.timeout)
             response_json = response.json()
@@ -226,7 +232,7 @@ class Zebra(object):
     def zpl(self):
         return b'^XA\n\n' + b'\n'.join(self.current_message) + b'\n\n^XZ'
 
-    def send_message(self, clear_message=True):
+    def send_message(self, clear_message=True, host_override=None, port_override=None):
         zpl = self.zpl
         log.debug('Sending message: %s' % zpl)
 
