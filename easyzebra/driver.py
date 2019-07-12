@@ -228,6 +228,13 @@ class Zebra(object):
     def set_label_home(self, x, y):
         self.message_line('^LH%s,%s' % (x, y))
 
+    def next_label(self):
+        """
+        Use this when you want to print multiple labels in one go.  This will end the current
+        label and start the next one
+        """
+        self.message_line('\n\n^XZ\n^XA\n\n')
+
     @property
     def zpl(self):
         return b'^XA\n\n' + b'\n'.join(self.current_message) + b'\n\n^XZ'
