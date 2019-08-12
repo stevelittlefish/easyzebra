@@ -4,7 +4,7 @@ This contains utility functions for use with the zebra printer
 
 import logging
 
-from .driver import FONTS
+from .driver import DEFAULT_FONTS
 
 __author__ = 'Stephen Brown (Little Fish Solutions LTD)'
 
@@ -86,17 +86,17 @@ def print_font_guide(zebra, connect=True):
 
     for i in range(6):
         zebra.pos = (30, i * 50 + 15)
-        zebra.font = FONTS[i]
+        zebra.font = DEFAULT_FONTS[i]
         zebra.write_text('%s:abcd' % zebra.font)
 
     for i in range(5):
         zebra.pos = (250, i * 65 + 15)
-        zebra.font = FONTS[(i + 6)]
+        zebra.font = DEFAULT_FONTS[(i + 6)]
         zebra.write_text('%s:abcd' % zebra.font)
 
     for i in range(5):
         zebra.pos = (550, i * 50 + 15)
-        zebra.font = FONTS[(i + 11)]
+        zebra.font = DEFAULT_FONTS[(i + 11)]
         zebra.write_text('%s:abcd' % zebra.font)
 
     zebra.send_message()
