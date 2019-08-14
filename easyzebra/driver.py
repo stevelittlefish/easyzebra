@@ -311,7 +311,7 @@ class Zebra(object):
     def write_text_block(self, text, width, max_lines=1, justification=JUSTIFICATION_LEFT,
                          add_line_space=0, pos=None, char_size=None, font=None,
                          hanging_indent=0, convert_to_ascii=DEFAULT,
-                         orientation=ORIENTATION_0):
+                         orientation=ORIENTATION_0, allow_line_breaks=True):
 
         if convert_to_ascii == DEFAULT:
             convert_to_ascii = _convert_to_ascii
@@ -331,6 +331,9 @@ class Zebra(object):
             ascii_text = unidecode(text)
         else:
             ascii_text = text
+
+        if allow_line_breaks and '\n' in ascii_text:
+            ascii_text = ascii_text.replace('\n', '\\&') + '\\&'
 
         self.field_origin(pos)
         self.message_line('^A%s%s,%s,%s' % (font, orientation, char_size[0], char_size[1]))
