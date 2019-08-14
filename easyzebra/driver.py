@@ -256,7 +256,7 @@ class Zebra(object):
             ))
         self.message_line('^CI{}'.format(encoding))
 
-    def load_font(self, identifier, font_filename):
+    def load_font(self, identifier, font_filename, device='E'):
         """
         All built-in fonts are referenced using a one-character identifier. The ^CW command assigns
         a single alphanumeric character to a font stored in DRAM, memory card, EPROM, or Flash.
@@ -276,7 +276,7 @@ class Zebra(object):
         if len(identifier) != 1:
             raise ValueError('Invalid font: {} - must be a single character'.format(identifier))
 
-        self.message_line('^CWT,{}:{}'.format(identifier, font_filename))
+        self.message_line('^CW{},{}:{}'.format(identifier, device, font_filename))
 
     def load_swiss_721_font(self, identifier):
         self.load_font(identifier, 'TT0003M_.FNT')
