@@ -44,5 +44,10 @@ from .driver import (
     ORIENTATION_270
 )
 
+from .zebrautil import (
+    ZebraLabel,
+    ZebraLabelList
+)
+
 __author__ = 'Stephen Brown (Little Fish Solutions LTD)'
 
